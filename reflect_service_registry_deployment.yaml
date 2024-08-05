@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reflect-service-registry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reflect-service-registry
+  template:
+    metadata:
+      labels:
+        app: reflect-service-registry
+    spec:
+      containers:
+        - name: reflect-service-registry
+          image: borissolomonia/reflect_service_registry_1:latest #dockerhub ზე განთავსებული იმიჯია საჭირო
+          ports:
+            - containerPort: 8761
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"
+            - name: DB_HOST
+              value: jdbc:postgresql://postgres:5432/postgres
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reflect-service-registry
+spec:
+  ports:
+    - port: 8761
+      targetPort: 8761
+  selector:
+    app: reflect-service-registry
